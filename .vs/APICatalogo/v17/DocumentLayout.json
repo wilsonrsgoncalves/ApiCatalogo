@@ -64,7 +64,7 @@
               "RelativeDocumentMoniker": "APICatalogo\\Controllers\\CategoriasController.cs",
               "ToolTip": "C:\\Curso\\Dotnet9\\Catalogo\\APICatalogo\\Controllers\\CategoriasController.cs",
               "RelativeToolTip": "APICatalogo\\Controllers\\CategoriasController.cs",
-              "ViewState": "AgIAAFwAAAAAAAAAAAAIwHAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAFwAAAAAAAAAAAAIwGsAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-24T16:37:14.425Z",
               "EditorCaption": ""
@@ -79,8 +79,7 @@
               "RelativeToolTip": "APICatalogo\\README",
               "ViewState": "AgIAAAIAAAAAAAAAAAAAAAIAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2025-05-24T16:26:57.309Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-24T16:26:57.309Z"
             },
             {
               "$type": "Document",
@@ -92,8 +91,7 @@
               "RelativeToolTip": "APICatalogo\\appsettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAA/AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-05-24T16:14:24.899Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-24T16:14:24.899Z"
             },
             {
               "$type": "Document",
@@ -105,8 +103,7 @@
               "RelativeToolTip": "APICatalogo\\Context\\AppDbContext.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-24T16:14:18.919Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-24T16:14:18.919Z"
             },
             {
               "$type": "Document",
@@ -118,8 +115,7 @@
               "RelativeToolTip": "APICatalogo\\.env",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2025-05-24T16:13:43.621Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-24T16:13:43.621Z"
             },
             {
               "$type": "Document",
@@ -131,8 +127,7 @@
               "RelativeToolTip": "APICatalogo\\Models\\Categoria.cs",
               "ViewState": "AgIAAAMAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-24T14:11:46.586Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-24T14:11:46.586Z"
             },
             {
               "$type": "Document",
