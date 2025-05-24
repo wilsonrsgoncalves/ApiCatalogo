@@ -1,0 +1,3 @@
+﻿## API Catalogo 
+## executar o docker para subir o banco de dados mysql
+docker run -d --name catalogo_mysql --env-file .env -p 3306:3306 mysql:latest
