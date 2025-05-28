@@ -52,6 +52,8 @@ public class CategoriasController(AppDbContext context) : ControllerBase
     [HttpGet("{id:int}", Name = "ObterCategoria")]
     public ActionResult<Categoria> Get(int id)
     {
+
+        throw new Exception("O parâmetro id não pode ser nulo.");
         try
         {
             var categoria = _context.Categorias?.FirstOrDefault(p => p.CategoriaId == id);

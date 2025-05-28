@@ -1,0 +1,47 @@
+﻿## Build results
+bin/
+obj/
+artifacts/
+project.lock.json
+project.fragment.lock.json
+
+## ASP.NET Core
+appsettings.*.json
+appsettings.Development.json
+
+## User-specific files
+*.user
+*.suo
+*.swp
+*.tmp
+*.bak
+*.log
+
+## IDEs
+
+# Visual Studio
+.vs/
+
+# Rider
+.idea/
+
+# Visual Studio Code
+.vscode/
+
+## NuGet
+*.nupkg
+.nuget/
+packages/
+
+## Publish output
+*.Publish.xml
+*.dbmdl
+
+## Test results
+TestResults/
+*.coverage
+*.coveragexml
+*.trx
+
+## Others
+bin/debug/
