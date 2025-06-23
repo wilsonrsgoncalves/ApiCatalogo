@@ -1,4 +1,6 @@
-﻿using APICatalogo.Models;
+﻿using APICatalogo.DTOs;
+using APICatalogo.Mappings;
+using APICatalogo.Models;
 using APICatalogo.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,10 +14,16 @@ public class CategoriasController(IUnitOfWork unitOfWork,
     private readonly ILogger<CategoriasController> _logger = logger;
 
     [HttpGet]
-    public ActionResult<IEnumerable<Categoria>> Get()
+    public ActionResult<IEnumerable<CategoriaDTO >> Get()
     {
         var categorias = _unitOfWork.CategoriaRepository.GetAll();
-        return Ok(categorias);
+
+        if (categorias is null)
+            return NotFound("Não existem categorias...");
+
+        var categoriasDto = categorias.ToCategoriaDTOList();
+
+        return Ok(categoriasDto);
     }
 
     [HttpGet("{id:int}", Name = "ObterCategoria")]
@@ -28,24 +36,44 @@ public class CategoriasController(IUnitOfWork unitOfWork,
             _logger.LogWarning("Categoria com id= {id} não encontrada...",id);
             return NotFound($"Categoria com id= {id} não encontrada...");
         }
-        return Ok(categoria);
+
+        var categoriaDto = categoria.ToCategoriaDTO();
+
+        return Ok(categoriaDto);
     }
 
     [HttpPost]
-    public ActionResult Post(Categoria categoria)
+    public ActionResult Post(CategoriaDTO categoriaDto)
     {
-        if (categoria is null)
+        if (categoriaDto is null)
         {
             _logger.LogWarning($"Dados inválidos...");
             return BadRequest("Dados inválidos");
         }
 
+        var categoria = categoriaDto.ToCategoria();
+
+        if (categoria is null) 
+        {
+            _logger.LogWarning($"Falha ao converter CategoriaDTO para Categoria...");
+            return BadRequest("Falha ao converter dados para categoria");
+        }
+
         var categoriaCriada = _unitOfWork.CategoriaRepository.Create(categoria);
         _unitOfWork.Commit();
 
-        return new CreatedAtRouteResult("ObterCategoria",
-            new { id = categoriaCriada.CategoriaId },
-            categoriaCriada);
+        var novaCategoriaDto = categoriaCriada.ToCategoriaDTO();
+        if (novaCategoriaDto is null)
+        {
+            _logger.LogWarning($"Falha ao converter Categoria para CategoriaDTO...");
+            return BadRequest("Falha ao converter dados para categoria");
+        }
+        else
+        {
+            return new CreatedAtRouteResult("ObterCategoria",
+                new { id = novaCategoriaDto.CategoriaId },
+                novaCategoriaDto);
+        }
     }
 
     [HttpPut("{id:int}")]

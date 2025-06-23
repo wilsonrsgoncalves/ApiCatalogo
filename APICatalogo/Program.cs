@@ -2,10 +2,12 @@ using APICatalogo.Context;
 using APICatalogo.Extensions;
 using APICatalogo.Filters;
 using APICatalogo.Logging;
+using APICatalogo.Mappings;
 using APICatalogo.Repositories;
 using APICatalogo.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
+using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers(options =>
@@ -36,8 +38,7 @@ builder.Logging.AddProvider(new CustomLoggerProvider(new CustomLoggerProviderCon
     LogLevel = LogLevel.Information
     
 }));
-
-
+builder.Services.AddAutoMapper(typeof(DTOMappingProfile));
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

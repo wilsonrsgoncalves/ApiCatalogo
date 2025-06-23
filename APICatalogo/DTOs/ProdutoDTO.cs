@@ -1,33 +1,33 @@
-﻿using APICatalogo.Validations;
+﻿namespace APICatalogo.DTOs;
+
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace APICatalogo.DTOs
+public class ProdutoDTO
 {
-    public class ProdutoDTO
-    {
+    public int ProdutoId { get; set; }
 
-        
-        public int ProdutoId { get; set; }
+    [Required(ErrorMessage = "O nome é obrigatório")]
+    [StringLength(80, MinimumLength = 5, ErrorMessage = "O nome deve ter entre 5 e 80 caracteres.")]
+    public string Nome { get; set; } = string.Empty;
 
-        [Required]
-        [StringLength(80)]
-        [PrimeiraLetraMaiuscula]
-        public string Nome { get; set; }
-        [Required]
-        [StringLength(300)]
-        public string? Descricao { get; set; }
+    [Required(ErrorMessage = "A descrição é obrigatória")]
+    [StringLength(300)]
+    public string Descricao { get; set; } = string.Empty;
 
-        [Required]        
-        [Column(TypeName = "decimal(10,2)")]
-        public decimal Preco { get; set; }
+    [Required(ErrorMessage = "O preço é obrigatório")]
+    [Range(1, 10000, ErrorMessage = "O preço deve estar entre 1 e 10000")]
+    public decimal Preco { get; set; }
 
-        [Required]
-        [StringLength(300, MinimumLength = 10)]
-        public string? ImagemUrl { get; set; }
+    [Required(ErrorMessage = "A imagem é obrigatória")]
+    [StringLength(300, MinimumLength = 10)]
+    public string ImagemUrl { get; set; } = string.Empty;
 
-        public float Estoque { get; set; }
-        public DateTime DataCadastro { get; set; }
-        public int CategoriaId { get; set; }
-    }
+    public float Estoque { get; set; }
+
+    public DateTime DataCadastro { get; set; }
+
+    public int CategoriaId { get; set; }
+
+    // Evita acoplamento com entidade Categoria
+    public string? CategoriaNome { get; set; }
 }
