@@ -2,16 +2,16 @@
 using APICatalogo.Models;
 using APICatalogo.Repositories.Interfaces;
 using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APICatalogo.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-
-public class ProdutosController(IUnitOfWork unitOfWork, IMapper mapper) : ControllerBase
+public class ProdutosController(IUnitOfWork uof, IMapper mapper) : ControllerBase
 {
-    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IUnitOfWork _unitOfWork = uof;
     private readonly IMapper _mapper = mapper;
 
     [HttpGet("produtos/{id}")]
@@ -20,7 +20,7 @@ public class ProdutosController(IUnitOfWork unitOfWork, IMapper mapper) : Contro
         var produtos = _unitOfWork.ProdutoRepository.GetProdutosPorCategoria(id);
 
         if (produtos is null)
-            return NotFound();
+            return NotFound();        
         var produtosDto = _mapper.Map<IEnumerable<ProdutoDTO>>(produtos);
         return Ok(produtosDto);
     }
@@ -56,24 +56,53 @@ public class ProdutosController(IUnitOfWork unitOfWork, IMapper mapper) : Contro
             return BadRequest();
 
         var produto = _mapper.Map<Produto>(produtoDto);
+
         var novoProduto = _unitOfWork.ProdutoRepository.Create(produto);
         _unitOfWork.Commit();
 
+        var novoProdutoDto = _mapper.Map<ProdutoDTO>(novoProduto);
+
         return new CreatedAtRouteResult("ObterProduto",
-            new { id = novoProduto.ProdutoId }, novoProduto);
+            new { id = novoProdutoDto.ProdutoId }, novoProdutoDto);
+    }
+
+    [HttpPatch("{id}/UpdatePartial")]
+    public ActionResult<ProdutoDTOUpdateResponse> Patch(int id,
+        JsonPatchDocument<ProdutoDTOUpdateRequest> patchProdutoDto)
+    {
+    
+        if (patchProdutoDto == null || id <= 0)
+            return BadRequest();
+    
+        var produto = _unitOfWork.ProdutoRepository.Get(c => c.ProdutoId == id);
+        
+        if (produto == null)
+            return NotFound();
+        
+        var produtoUpdateRequest = _mapper.Map<ProdutoDTOUpdateRequest>(produto);        
+        patchProdutoDto.ApplyTo(produtoUpdateRequest, ModelState);
+
+        if (!ModelState.IsValid || !TryValidateModel(produtoUpdateRequest))
+            return BadRequest(ModelState);        
+        _mapper.Map(produtoUpdateRequest, produto);
+        
+        _unitOfWork.ProdutoRepository.Update(produto);        
+        _unitOfWork.Commit();        
+        return Ok(_mapper.Map<ProdutoDTOUpdateResponse>(produto));
     }
 
     [HttpPut("{id:int}")]
     public ActionResult<ProdutoDTO> Put(int id, ProdutoDTO produtoDto)
     {
         if (id != produtoDto.ProdutoId)
-        {
-            return BadRequest();
-        }
+            return BadRequest();//400
+
         var produto = _mapper.Map<Produto>(produtoDto);
+
         var produtoAtualizado = _unitOfWork.ProdutoRepository.Update(produto);
-        var produtoAtualizadoDto = _mapper.Map<ProdutoDTO>(produtoAtualizado);
         _unitOfWork.Commit();
+
+        var produtoAtualizadoDto = _mapper.Map<ProdutoDTO>(produtoAtualizado);
 
         return Ok(produtoAtualizadoDto);
     }
@@ -93,7 +122,5 @@ public class ProdutosController(IUnitOfWork unitOfWork, IMapper mapper) : Contro
         var produtoDeletadoDto = _mapper.Map<ProdutoDTO>(produtoDeletado);
 
         return Ok(produtoDeletadoDto);
-
-
     }
 }

@@ -22,12 +22,6 @@ public class ProdutoDTO
     [StringLength(300, MinimumLength = 10)]
     public string ImagemUrl { get; set; } = string.Empty;
 
-    public float Estoque { get; set; }
-
-    public DateTime DataCadastro { get; set; }
-
     public int CategoriaId { get; set; }
-
-    // Evita acoplamento com entidade Categoria
-    public string? CategoriaNome { get; set; }
 }
+    
