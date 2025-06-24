@@ -1,7 +1,6 @@
 ﻿using System.Linq.Expressions;
 
 namespace APICatalogo.Repositories.Interfaces;
-
 public interface IRepository<T>
 {
     //cuidado para não violar o principio ISP
