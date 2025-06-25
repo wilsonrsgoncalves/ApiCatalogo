@@ -42,7 +42,7 @@ public class Produto : IValidatableObject
         if (!string.IsNullOrEmpty(this.Nome))
         {
             var primeiraLetra = this.Nome[0].ToString();
-            if (primeiraLetra != primeiraLetra.ToUpper())
+            if (!primeiraLetra.Equals(primeiraLetra, StringComparison.CurrentCultureIgnoreCase))
             {
                 yield return new
                     ValidationResult("A primeira letra do produto deve ser maiúscula",

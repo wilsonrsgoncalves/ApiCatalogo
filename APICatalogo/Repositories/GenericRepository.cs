@@ -9,13 +9,13 @@ public class GenericRepository<T>(AppDbContext context) : IRepository<T> where T
 {
     protected AppDbContext _context = context;
 
-    public IEnumerable<T> GetAll()
+    public async Task<IEnumerable<T>> GetAllAsync()
     {
-        return _context.Set<T>().AsNoTracking();
+        return await _context.Set<T>().AsNoTracking().ToListAsync();
     }
-    public T? Get(Expression<Func<T, bool>> predicate)
+    public async Task<T?> GetAsync(Expression<Func<T, bool>> predicate)
     {
-        return _context.Set<T>().AsNoTracking().FirstOrDefault(predicate);
+        return await _context.Set<T>().AsNoTracking().FirstOrDefaultAsync(predicate);
     }
     public T Create(T entity)
     {

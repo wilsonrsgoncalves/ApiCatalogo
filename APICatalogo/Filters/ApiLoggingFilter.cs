@@ -2,14 +2,10 @@
 
 namespace APICatalogo.Filters;
 
-public class ApiLoggingFilter : IActionFilter
+public class ApiLoggingFilter(ILogger<ApiLoggingFilter> logger) : IActionFilter
 {
-    private readonly ILogger<ApiLoggingFilter> _logger;
+    private readonly ILogger<ApiLoggingFilter> _logger = logger;
 
-    public ApiLoggingFilter(ILogger<ApiLoggingFilter> logger)
-    {
-        _logger = logger;
-    }
     public void OnActionExecuting(ActionExecutingContext context)
     {
         //executa antes da Action

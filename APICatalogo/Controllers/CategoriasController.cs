@@ -10,123 +10,46 @@ namespace APICatalogo.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-public class CategoriasController(IUnitOfWork unitOfWork, ILogger<CategoriasController> logger) : ControllerBase
+public class CategoriasController(IUnitOfWork uof,
+    ILogger<CategoriasController> logger) : ControllerBase
 {
-    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IUnitOfWork _unitOfWork = uof;
     private readonly ILogger<CategoriasController> _logger = logger;
 
     [HttpGet]
-    public ActionResult<IEnumerable<CategoriaDTO>> GetAll()
+    public async Task<ActionResult<IEnumerable<CategoriaDTO>>> Get()
     {
-        var categorias = _unitOfWork.CategoriaRepository.GetAll();
+        var categorias = await _unitOfWork.CategoriaRepository.GetAllAsync();
 
-        if (!categorias.Any())
-        {
-            _logger.LogWarning("Nenhuma categoria encontrada.");
+        if (categorias is null)
             return NotFound("Não existem categorias...");
-        }
 
-        return Ok(categorias.ToCategoriaDTOList());
+        var categoriasDto = categorias.ToCategoriaDTOList();
+
+        return Ok(categoriasDto);
     }
 
     [HttpGet("pagination")]
-    public ActionResult<IEnumerable<CategoriaDTO>> GetPaginated([FromQuery] CategoriasParameters parametros)
+    public async Task<ActionResult<IEnumerable<CategoriaDTO>>> Get([FromQuery]
+                               CategoriasParameters categoriasParameters)
     {
-        var categorias = _unitOfWork.CategoriaRepository.GetCategorias(parametros);
-        return PaginacaoComMetadata(categorias);
+        var categorias = await _unitOfWork.CategoriaRepository.GetCategoriasAsync(categoriasParameters);
+
+        return ObterCategorias(categorias);
     }
 
     [HttpGet("filter/nome/pagination")]
-    public ActionResult<IEnumerable<CategoriaDTO>> GetByNomeComPaginacao([FromQuery] CategoriasFiltroNome filtro)
+    public async Task<ActionResult<IEnumerable<CategoriaDTO>>> GetCategoriasFiltradas(
+                                   [FromQuery] CategoriasFiltroNome categoriasFiltro)
     {
-        var categoriasFiltradas = _unitOfWork.CategoriaRepository.GetCategoriasFiltroNome(filtro);
-        return PaginacaoComMetadata(categoriasFiltradas);
+        var categoriasFiltradas = await _unitOfWork.CategoriaRepository
+                                     .GetCategoriasFiltroNomeAsync(categoriasFiltro);
+
+        return ObterCategorias(categoriasFiltradas);
+
     }
 
-    [HttpGet("{id:int}", Name = "ObterCategoria")]
-    public ActionResult<CategoriaDTO> GetById(int id)
-    {
-        var categoria = _unitOfWork.CategoriaRepository.Get(c => c.CategoriaId == id);
-
-        if (categoria is null)
-        {
-            _logger.LogWarning("Categoria com id={CategoriaId} não encontrada.", id);
-            return NotFound($"Categoria com id={id} não encontrada.");
-        }
-
-        return Ok(categoria.ToCategoriaDTO());
-    }
-
-    [HttpPost]
-    public ActionResult<CategoriaDTO> Create([FromBody] CategoriaDTO categoriaDto)
-    {
-        if (categoriaDto is null)
-        {
-            _logger.LogWarning("Dados inválidos no corpo da requisição.");
-            return BadRequest("Dados inválidos.");
-        }
-
-        var categoria = categoriaDto.ToCategoria();
-        if (categoria is null)
-        {
-            _logger.LogWarning("Falha ao converter CategoriaDTO para Categoria.");
-            return BadRequest("Dados inválidos.");
-        }
-
-        var createdCategoria = _unitOfWork.CategoriaRepository.Create(categoria);
-        _unitOfWork.Commit();
-
-        return CreatedAtRoute("ObterCategoria", new { id = createdCategoria.CategoriaId }, createdCategoria.ToCategoriaDTO());
-    }
-
-    [HttpPut("{id:int}")]
-    public ActionResult<CategoriaDTO> Update(int id, [FromBody] CategoriaDTO categoriaDto)
-    {
-        if (categoriaDto is null || id != categoriaDto.CategoriaId)
-        {
-            _logger.LogWarning("Dados inválidos para atualização da categoria.");
-            return BadRequest("Dados inválidos.");
-        }
-
-        var existingCategoria = _unitOfWork.CategoriaRepository.Get(c => c.CategoriaId == id);
-
-        if (existingCategoria is null)
-        {
-            _logger.LogWarning("Categoria com id={CategoriaId} não encontrada para atualização.", id);
-            return NotFound($"Categoria com id={id} não encontrada.");
-        }
-
-        var categoria = categoriaDto.ToCategoria();
-        if (categoria is null)
-        {
-            _logger.LogWarning("Falha ao converter CategoriaDTO para Categoria.");
-            return BadRequest("Dados inválidos.");
-        }
-
-        var updatedCategoria = _unitOfWork.CategoriaRepository.Update(categoria);
-        _unitOfWork.Commit();
-
-        return Ok(updatedCategoria.ToCategoriaDTO());
-    }
-
-    [HttpDelete("{id:int}")]
-    public ActionResult<CategoriaDTO> Delete(int id)
-    {
-        var categoria = _unitOfWork.CategoriaRepository.Get(c => c.CategoriaId == id);
-
-        if (categoria is null)
-        {
-            _logger.LogWarning("Categoria com id={CategoriaId} não encontrada para exclusão.", id);
-            return NotFound($"Categoria com id={id} não encontrada.");
-        }
-
-        var categoriaExcluida = _unitOfWork.CategoriaRepository.Delete(categoria);
-        _unitOfWork.Commit();
-
-        return Ok(categoriaExcluida.ToCategoriaDTO());
-    }
-
-    private ActionResult<IEnumerable<CategoriaDTO>> PaginacaoComMetadata(PagedList<Categoria> categorias)
+    private ActionResult<IEnumerable<CategoriaDTO>> ObterCategorias(PagedList<Categoria> categorias)
     {
         var metadata = new
         {
@@ -139,6 +62,105 @@ public class CategoriasController(IUnitOfWork unitOfWork, ILogger<CategoriasCont
         };
 
         Response.Headers.Append("X-Pagination", JsonConvert.SerializeObject(metadata));
-        return Ok(categorias.ToCategoriaDTOList());
+        var categoriasDto = categorias.ToCategoriaDTOList();
+        return Ok(categoriasDto);
+    }
+
+    [HttpGet("{id:int}", Name = "ObterCategoria")]
+    public async Task<ActionResult<CategoriaDTO>> Get(int id)
+    {
+        var categoria = await _unitOfWork.CategoriaRepository.GetAsync(c => c.CategoriaId == id);
+
+        if (categoria is null)
+        {
+            _logger.LogWarning("Categoria com id= {id} não encontrada...",id);
+            return NotFound($"Categoria com id= {id} não encontrada...");
+        }
+
+        var categoriaDto = categoria.ToCategoriaDTO();
+
+        return Ok(categoriaDto);
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<CategoriaDTO>> Post(CategoriaDTO categoriaDto)
+    {
+        if (categoriaDto is null)
+        {
+            _logger.LogWarning($"Dados inválidos...");
+            return BadRequest("Dados inválidos");
+        }
+
+        var categoria = categoriaDto.ToCategoria();
+
+        if (categoria is null) 
+        {
+            _logger.LogWarning($"Falha ao converter CategoriaDTO para Categoria...");
+            return BadRequest("Falha ao converter dados");
+        }
+
+        var categoriaCriada = _unitOfWork.CategoriaRepository.Create(categoria);
+
+        if (categoriaCriada is null) 
+        {
+            _logger.LogWarning($"Falha ao criar nova categoria...");
+            return StatusCode(500, "Erro interno ao criar categoria");
+        }
+
+        await _unitOfWork.CommitAsync();
+
+        var novaCategoriaDto = categoriaCriada.ToCategoriaDTO();
+
+        if (novaCategoriaDto is null) 
+        {
+            _logger.LogWarning($"Falha ao converter Categoria para CategoriaDTO...");
+            return StatusCode(500, "Erro interno ao processar categoria criada");
+        }
+
+        return new CreatedAtRouteResult("ObterCategoria",
+            new { id = novaCategoriaDto.CategoriaId },
+            novaCategoriaDto);
+    }
+
+    [HttpPut("{id:int}")]
+    public async Task<ActionResult<CategoriaDTO>> Put(int id, CategoriaDTO categoriaDto)
+    {
+        if (id != categoriaDto.CategoriaId)
+        {
+            _logger.LogWarning($"Dados inválidos...");
+            return BadRequest("Dados inválidos");
+        }
+
+        var categoria = categoriaDto.ToCategoria();
+        if (categoria is null)
+        {
+            _logger.LogWarning($"Falha ao converter CategoriaDTO para Categoria..."); 
+            return BadRequest("Falha ao converter dados");
+        }
+        var categoriaAtualizada = _unitOfWork.CategoriaRepository.Update(categoria);
+        await _unitOfWork.CommitAsync();
+
+        var categoriaAtualizadaDto = categoriaAtualizada.ToCategoriaDTO();
+
+        return Ok(categoriaAtualizadaDto);
+    }
+
+    [HttpDelete("{id:int}")]
+    public async Task<ActionResult<CategoriaDTO>> Delete(int id)
+    {
+        var categoria = await _unitOfWork.CategoriaRepository.GetAsync(c => c.CategoriaId == id);
+
+        if (categoria is null)
+        {
+            _logger.LogWarning("Categoria com id={id} não encontrada...",id);
+            return NotFound($"Categoria com id={id} não encontrada...");
+        }
+
+        var categoriaExcluida = _unitOfWork.CategoriaRepository.Delete(categoria);
+        await _unitOfWork.CommitAsync();
+
+        var categoriaExcluidaDto = categoriaExcluida.ToCategoriaDTO();
+
+        return Ok(categoriaExcluidaDto);
     }
 }

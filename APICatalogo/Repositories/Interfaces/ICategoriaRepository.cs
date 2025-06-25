@@ -4,6 +4,7 @@ using APICatalogo.Pagination;
 namespace APICatalogo.Repositories.Interfaces;
 public interface ICategoriaRepository : IRepository<Categoria>
 {
-    PagedList<Categoria> GetCategorias(CategoriasParameters categoriasParams);
-    PagedList<Categoria> GetCategoriasFiltroNome(CategoriasFiltroNome categoriasParams);
+    Task<PagedList<Categoria>> GetCategoriasAsync(CategoriasParameters categoriasParams);
+    Task<PagedList<Categoria>> GetCategoriasFiltroNomeAsync(CategoriasFiltroNome categoriasParams);
+
 }

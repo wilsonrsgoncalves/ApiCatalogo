@@ -5,42 +5,34 @@ using System.Linq.Expressions;
 
 namespace APICatalogo.Repositories;
 
-public class Repository<T> : IRepository<T> where T : class
+public class Repository<T>(AppDbContext context) : IRepository<T> where T : class
 {
-    protected readonly AppDbContext _context;
+    protected readonly AppDbContext _context = context;
 
-    public Repository(AppDbContext context)
+    public async Task<IEnumerable<T>> GetAllAsync()
     {
-        _context = context;
+        return await _context.Set<T>().AsNoTracking().ToListAsync();
     }
 
-    public IEnumerable<T> GetAll()
+    public async Task<T?> GetAsync(Expression<Func<T, bool>> predicate)
     {
-        return _context.Set<T>().AsNoTracking().ToList();
-    }
-
-    public T? Get(Expression<Func<T, bool>> predicate)
-    {
-        return _context.Set<T>().FirstOrDefault(predicate);
+        return await _context.Set<T>().FirstOrDefaultAsync(predicate);
     }
 
     public T Create(T entity)
     {
-        _context.Set<T>().Add(entity);
-        //_context.SaveChanges();
+        _context.Set<T>().Add(entity);        
         return entity;
     }
     public T Update(T entity)
     {
         _context.Set<T>().Update(entity);
-        //_context.Entry(entity).State = EntityState.Modified;
-        //_context.SaveChanges();
         return entity;
     }
     public T Delete(T entity)
     {
-        _context.Set<T>().Remove(entity);
-        //_context.SaveChanges();
+        _context.Set<T>().Remove(entity);        
         return entity;
     }
+
 }
