@@ -1,0 +1,3 @@
+Using project 'C:\Curso\Dotnet9\Catalogo\APICatalogo\APICatalogo.csproj'.
+Using startup project 'C:\Curso\Dotnet9\Catalogo\APICatalogo\APICatalogo.csproj'.
+dotnet msbuild /target:GetEFProjectMetadata /property:EFProjectMetadataFile=C:\Users\wilso\AppData\Local\Temp\tmpzqcsiq.tmp /verbosity:quiet /nologo C:\Curso\Dotnet9\Catalogo\APICatalogo\APICatalogo.csproj
