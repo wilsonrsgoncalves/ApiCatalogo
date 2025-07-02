@@ -3,6 +3,7 @@ using APICatalogo.Models;
 using APICatalogo.Pagination;
 using APICatalogo.Repositories.Interfaces;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -11,12 +12,15 @@ namespace APICatalogo.Controllers;
 
 [Route("[controller]")]
 [ApiController]
+
 public class ProdutosController(IUnitOfWork uof, IMapper mapper) : ControllerBase
 {
     private readonly IUnitOfWork _unitOfWork = uof;
     private readonly IMapper _mapper = mapper;
+    
 
     [HttpGet("produtos/{id}")]
+    
     public async Task<ActionResult<IEnumerable<ProdutoDTO>>> GetProdutosCategoria(int id)
     {
         var produtos = await _unitOfWork.ProdutoRepository.GetProdutosPorCategoriaAsync(id);
@@ -63,6 +67,7 @@ public class ProdutosController(IUnitOfWork uof, IMapper mapper) : ControllerBas
     }
 
     [HttpGet]
+    [Authorize(Policy = "UserOnly")]
     public async Task<ActionResult<IEnumerable<ProdutoDTO>>> Get()
     {
         var produtos = await _unitOfWork.ProdutoRepository.GetAllAsync();
@@ -73,6 +78,7 @@ public class ProdutosController(IUnitOfWork uof, IMapper mapper) : ControllerBas
         return Ok(produtosDto);
     }
     [HttpGet("{id}", Name = "ObterProduto")]
+    [Authorize(Policy = "UserOnly")]
     public async Task<ActionResult<ProdutoDTO>> Get(int id)
     {
         var produto = await _unitOfWork.ProdutoRepository.GetAsync(c => c.ProdutoId == id);
@@ -145,6 +151,7 @@ public class ProdutosController(IUnitOfWork uof, IMapper mapper) : ControllerBas
     }
 
     [HttpDelete("{id:int}")]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<ActionResult<ProdutoDTO>> Delete(int id)
     {
         var produto = await _unitOfWork.ProdutoRepository.GetAsync(p => p.ProdutoId == id);

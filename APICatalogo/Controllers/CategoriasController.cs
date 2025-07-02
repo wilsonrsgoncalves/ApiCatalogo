@@ -17,8 +17,8 @@ public class CategoriasController(IUnitOfWork uof,
     private readonly IUnitOfWork _unitOfWork = uof;
     private readonly ILogger<CategoriasController> _logger = logger;
 
-    [HttpGet]
-    [Authorize]
+    //[Authorize]
+    [HttpGet]    
     public async Task<ActionResult<IEnumerable<CategoriaDTO>>> Get()
     {
         var categorias = await _unitOfWork.CategoriaRepository.GetAllAsync();
@@ -31,7 +31,7 @@ public class CategoriasController(IUnitOfWork uof,
         return Ok(categoriasDto);
     }
 
-    [HttpGet("pagination")]
+    [HttpGet("pagination")]    
     public async Task<ActionResult<IEnumerable<CategoriaDTO>>> Get([FromQuery]
                                CategoriasParameters categoriasParameters)
     {
@@ -41,6 +41,7 @@ public class CategoriasController(IUnitOfWork uof,
     }
 
     [HttpGet("filter/nome/pagination")]
+    
     public async Task<ActionResult<IEnumerable<CategoriaDTO>>> GetCategoriasFiltradas(
                                    [FromQuery] CategoriasFiltroNome categoriasFiltro)
     {
@@ -148,6 +149,7 @@ public class CategoriasController(IUnitOfWork uof,
     }
 
     [HttpDelete("{id:int}")]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<ActionResult<CategoriaDTO>> Delete(int id)
     {
         var categoria = await _unitOfWork.CategoriaRepository.GetAsync(c => c.CategoriaId == id);

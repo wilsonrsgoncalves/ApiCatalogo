@@ -46,8 +46,7 @@ public class Produto : IValidatableObject
             {
                 yield return new
                     ValidationResult("A primeira letra do produto deve ser maiúscula",
-                    new[]
-                    { nameof(this.Nome) }
+                    [nameof(this.Nome)]
                     );
             }
         }
@@ -56,8 +55,7 @@ public class Produto : IValidatableObject
         {
             yield return new
                    ValidationResult("O estoque deve ser maior que zero",
-                   new[]
-                   { nameof(this.Estoque) }
+                   [nameof(this.Estoque)]
                    );
         }
     }

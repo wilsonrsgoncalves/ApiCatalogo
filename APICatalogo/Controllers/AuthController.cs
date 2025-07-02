@@ -2,7 +2,6 @@
 using APICatalogo.Models;
 using APICatalogo.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
@@ -12,15 +11,15 @@ namespace APICatalogo.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController(ITokenService tokenService, 
-                                UserManager<ApplicationUser> userManager, 
-                                RoleManager<IdentityRole> roleManager, 
-                                IConfiguration configuration,
-                                ILogger<AuthController> logger) : ControllerBase
-    {  
+    public class AuthController(ITokenService tokenService,
+                          UserManager<ApplicationUser> userManager,
+                          RoleManager<IdentityRole> roleManager,
+                          IConfiguration configuration,
+                          ILogger<AuthController> logger) : ControllerBase
+    {
         private readonly ITokenService _tokenService = tokenService;
         private readonly UserManager<ApplicationUser> _userManager = userManager;
-        private readonly RoleManager<IdentityRole> _roleManager = roleManager;   
+        private readonly RoleManager<IdentityRole> _roleManager = roleManager;
         private readonly IConfiguration _configuration = configuration;
         private readonly ILogger<AuthController> _logger = logger;
 
@@ -72,7 +71,7 @@ namespace APICatalogo.Controllers
                 var result = await _userManager.AddToRoleAsync(user, roleName);
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation(1, $"User {user.Email} added to the {roleName} role");
+                    _logger.LogInformation(1, "User {user.Email} added to the {roleName} role", user.Email, roleName);
                     return StatusCode(StatusCodes.Status200OK,
                            new Response
                            {
@@ -83,7 +82,7 @@ namespace APICatalogo.Controllers
                 }
                 else
                 {
-                    _logger.LogInformation(1, $"Error: Unable to add user {user.Email} to the {roleName} role");
+                    _logger.LogInformation(1, "Error: Unable to add user {user.Email} to the {roleName} role", user.Email, roleName);
                     return StatusCode(StatusCodes.Status400BadRequest, new Response
                     {
                         Status = "Error",
@@ -176,39 +175,36 @@ namespace APICatalogo.Controllers
         [Route("refresh-token")]
         public async Task<IActionResult> RefreshToken(TokenModel tokenModel)
         {
-
             if (tokenModel is null)
             {
                 return BadRequest("Invalid client request");
             }
 
-            string? accessToken = tokenModel.AccessToken
-                                  ?? throw new ArgumentNullException(nameof(tokenModel));
+            string? accessToken = tokenModel.AccessToken;
+            string? refreshToken = tokenModel.RefreshToken;
 
-            string? refreshToken = tokenModel.RefreshToken
-                                   ?? throw new ArgumentException(nameof(tokenModel));
+            if (string.IsNullOrEmpty(accessToken) || string.IsNullOrEmpty(refreshToken))
+            {
+                return BadRequest("Invalid access token/refresh token");
+            }
 
-            var principal = _tokenService.GetPrincipalFromExpiredToken(accessToken!, _configuration);
+            var principal = _tokenService.GetPrincipalFromExpiredToken(accessToken, _configuration);
 
-            if (principal == null)
+            if (principal?.Identity?.Name is null)
             {
                 return BadRequest("Invalid access token/refresh token");
             }
 
             string username = principal.Identity.Name;
 
-            var user = await _userManager.FindByNameAsync(username!);
+            var user = await _userManager.FindByNameAsync(username);
 
-            if (user == null || user.RefreshToken != refreshToken
-                             || user.RefreshTokenExpiryTime <= DateTime.Now)
+            if (user == null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
             {
-
                 return BadRequest("Invalid access token/refresh token");
             }
 
-            var newAccessToken = _tokenService.GenerateAccessToken(
-                                               principal.Claims.ToList(), _configuration);
-
+            var newAccessToken = _tokenService.GenerateAccessToken([.. principal.Claims], _configuration);
             var newRefreshToken = _tokenService.GenerateRefreshToken();
 
             user.RefreshToken = newRefreshToken;
@@ -239,3 +235,4 @@ namespace APICatalogo.Controllers
         }
     }
 }
+    
