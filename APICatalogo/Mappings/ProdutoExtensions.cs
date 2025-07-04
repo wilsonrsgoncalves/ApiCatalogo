@@ -12,8 +12,8 @@ public static class ProdutoExtensions
             Nome = produto.Nome ?? "",
             Descricao = produto.Descricao ?? "",
             Preco = produto.Preco,
-            ImagemUrl = produto.ImagemUrl ?? "",            
-            CategoriaId = produto.CategoriaId,            
+            ImagemUrl = produto.ImagemUrl ?? "",
+            CategoriaId = produto.CategoriaId,
         };
     }
 
@@ -25,7 +25,7 @@ public static class ProdutoExtensions
             Nome = dto.Nome,
             Descricao = dto.Descricao,
             Preco = dto.Preco,
-            ImagemUrl = dto.ImagemUrl,            
+            ImagemUrl = dto.ImagemUrl,
             CategoriaId = dto.CategoriaId
         };
     }

@@ -27,5 +27,5 @@ public class ApiLoggingFilter(ILogger<ApiLoggingFilter> logger) : IActionFilter
     }
 }
 
-   
+
 

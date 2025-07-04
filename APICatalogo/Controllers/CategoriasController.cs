@@ -18,7 +18,7 @@ public class CategoriasController(IUnitOfWork uof,
     private readonly ILogger<CategoriasController> _logger = logger;
 
     //[Authorize]
-    [HttpGet]    
+    [HttpGet]
     public async Task<ActionResult<IEnumerable<CategoriaDTO>>> Get()
     {
         var categorias = await _unitOfWork.CategoriaRepository.GetAllAsync();
@@ -31,7 +31,7 @@ public class CategoriasController(IUnitOfWork uof,
         return Ok(categoriasDto);
     }
 
-    [HttpGet("pagination")]    
+    [HttpGet("pagination")]
     public async Task<ActionResult<IEnumerable<CategoriaDTO>>> Get([FromQuery]
                                CategoriasParameters categoriasParameters)
     {
@@ -41,7 +41,7 @@ public class CategoriasController(IUnitOfWork uof,
     }
 
     [HttpGet("filter/nome/pagination")]
-    
+
     public async Task<ActionResult<IEnumerable<CategoriaDTO>>> GetCategoriasFiltradas(
                                    [FromQuery] CategoriasFiltroNome categoriasFiltro)
     {
@@ -76,7 +76,7 @@ public class CategoriasController(IUnitOfWork uof,
 
         if (categoria is null)
         {
-            _logger.LogWarning("Categoria com id= {id} não encontrada...",id);
+            _logger.LogWarning("Categoria com id= {id} não encontrada...", id);
             return NotFound($"Categoria com id= {id} não encontrada...");
         }
 
@@ -96,7 +96,7 @@ public class CategoriasController(IUnitOfWork uof,
 
         var categoria = categoriaDto.ToCategoria();
 
-        if (categoria is null) 
+        if (categoria is null)
         {
             _logger.LogWarning($"Falha ao converter CategoriaDTO para Categoria...");
             return BadRequest("Falha ao converter dados");
@@ -104,7 +104,7 @@ public class CategoriasController(IUnitOfWork uof,
 
         var categoriaCriada = _unitOfWork.CategoriaRepository.Create(categoria);
 
-        if (categoriaCriada is null) 
+        if (categoriaCriada is null)
         {
             _logger.LogWarning($"Falha ao criar nova categoria...");
             return StatusCode(500, "Erro interno ao criar categoria");
@@ -114,7 +114,7 @@ public class CategoriasController(IUnitOfWork uof,
 
         var novaCategoriaDto = categoriaCriada.ToCategoriaDTO();
 
-        if (novaCategoriaDto is null) 
+        if (novaCategoriaDto is null)
         {
             _logger.LogWarning($"Falha ao converter Categoria para CategoriaDTO...");
             return StatusCode(500, "Erro interno ao processar categoria criada");
@@ -137,7 +137,7 @@ public class CategoriasController(IUnitOfWork uof,
         var categoria = categoriaDto.ToCategoria();
         if (categoria is null)
         {
-            _logger.LogWarning($"Falha ao converter CategoriaDTO para Categoria..."); 
+            _logger.LogWarning($"Falha ao converter CategoriaDTO para Categoria...");
             return BadRequest("Falha ao converter dados");
         }
         var categoriaAtualizada = _unitOfWork.CategoriaRepository.Update(categoria);
@@ -156,7 +156,7 @@ public class CategoriasController(IUnitOfWork uof,
 
         if (categoria is null)
         {
-            _logger.LogWarning("Categoria com id={id} não encontrada...",id);
+            _logger.LogWarning("Categoria com id={id} não encontrada...", id);
             return NotFound($"Categoria com id={id} não encontrada...");
         }
 

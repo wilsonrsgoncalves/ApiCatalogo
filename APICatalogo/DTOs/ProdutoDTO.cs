@@ -24,4 +24,4 @@ public class ProdutoDTO
 
     public int CategoriaId { get; set; }
 }
-    
+

@@ -43,7 +43,7 @@ public class ProdutoRepository(AppDbContext context) : Repository<Produto>(conte
 
     public async Task<IEnumerable<Produto>> GetProdutosPorCategoriaAsync(int id)
     {
-        var produtos = await GetAllAsync(); 
+        var produtos = await GetAllAsync();
         var produtosPorCategoria = produtos.Where(p => p.CategoriaId == id).AsQueryable();
 
         return produtosPorCategoria;

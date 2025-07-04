@@ -9,12 +9,12 @@ namespace APICatalogo.Controllers.Common;
 public abstract class BaseController<TDto, TEntity>(ILogger logger) : ControllerBase
     where TEntity : class
 {
-    
+
     private readonly ILogger<CategoriasController> _logger = (ILogger<CategoriasController>)logger;
     protected ActionResult<IEnumerable<TDto>> Paginar<PagedEntity>(
         PagedList<PagedEntity> entidades,
         Func<IEnumerable<PagedEntity>, IEnumerable<TDto>> conversor)
-        where PagedEntity : class 
+        where PagedEntity : class
     {
         if (!entidades.Any())
         {

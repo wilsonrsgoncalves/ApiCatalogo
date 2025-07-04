@@ -21,7 +21,7 @@ public class Repository<T>(AppDbContext context) : IRepository<T> where T : clas
 
     public T Create(T entity)
     {
-        _context.Set<T>().Add(entity);        
+        _context.Set<T>().Add(entity);
         return entity;
     }
     public T Update(T entity)
@@ -31,7 +31,7 @@ public class Repository<T>(AppDbContext context) : IRepository<T> where T : clas
     }
     public T Delete(T entity)
     {
-        _context.Set<T>().Remove(entity);        
+        _context.Set<T>().Remove(entity);
         return entity;
     }
 

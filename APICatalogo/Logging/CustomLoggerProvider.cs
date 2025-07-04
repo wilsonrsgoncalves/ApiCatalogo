@@ -17,7 +17,7 @@ namespace APICatalogo.Logging
         public void Dispose()
         {
             loggers.Clear();
-            GC.SuppressFinalize(this); 
+            GC.SuppressFinalize(this);
         }
     }
 }

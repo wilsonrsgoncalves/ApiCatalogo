@@ -10,7 +10,7 @@ namespace APICatalogo.DTOs
         public DateTime DataCadastro { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        {            
+        {
             return DataCadastro.Date <= DateTime.Now.Date
                 ? [new ValidationResult("A Data deve ser maior que a data atual.", new[] { nameof(this.DataCadastro) })]
                 : [];
