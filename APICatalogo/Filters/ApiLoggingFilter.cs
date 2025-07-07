@@ -7,8 +7,7 @@ public class ApiLoggingFilter(ILogger<ApiLoggingFilter> logger) : IActionFilter
     private readonly ILogger<ApiLoggingFilter> _logger = logger;
 
     public void OnActionExecuting(ActionExecutingContext context)
-    {
-        //executa antes da Action
+    {        
         _logger.LogInformation("### Executando -> OnActionExecuting");
         _logger.LogInformation("###################################################");
         _logger.LogInformation($"{DateTime.Now.ToLongTimeString()}");
@@ -17,8 +16,7 @@ public class ApiLoggingFilter(ILogger<ApiLoggingFilter> logger) : IActionFilter
 
     }
     public void OnActionExecuted(ActionExecutedContext context)
-    {
-        //executa depois da Action
+    {       
         _logger.LogInformation("### Executando -> OnActionExecuted");
         _logger.LogInformation("###################################################");
         _logger.LogInformation($"{DateTime.Now.ToLongTimeString()}");

@@ -1,31 +1,35 @@
-﻿using APICatalogo.Controllers;
-using APICatalogo.DTOs;
-using APICatalogo.Models;
+﻿using APICatalogo.Context;
+using APICatalogo.Mappings;
+using APICatalogo.Repositories;
 using APICatalogo.Repositories.Interfaces;
 using AutoMapper;
-using Moq;
+using Microsoft.EntityFrameworkCore;
 
+namespace ApiCatalogoxUnitTests.UnitTest;
 
-namespace ApiCatalogoxUnitTests.UnitTest
+public class ProdutosUnitTestController
 {
-    public class ProdutosUnitTestController
-    {
+    public IUnitOfWork repository;
+    public IMapper mapper;
+    public static DbContextOptions<AppDbContext> DbContextOptions { get; }
+    public static readonly string connectionString = ConfigurationHelper.GetConnectionString("DefaultConnection");
 
-        public readonly Mock<IUnitOfWork> _uofMock;
-        public readonly Mock<IProdutoRepository> _produtoRepoMock;
-        private readonly IMapper _mapper;
-        private readonly ProdutosController _controller;
-        public ProdutosUnitTestController()
-        {     
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<Produto, ProdutoDTO>().ReverseMap();
-            });
-            _mapper = config.CreateMapper();            
-            _produtoRepoMock = new Mock<IProdutoRepository>();
-            _uofMock = new Mock<IUnitOfWork>();
-            _uofMock.Setup(u => u.ProdutoRepository).Returns(_produtoRepoMock.Object);            
-            _controller = new ProdutosController(_uofMock.Object, _mapper);
-        }
+    static ProdutosUnitTestController()
+    {
+        DbContextOptions = new DbContextOptionsBuilder<AppDbContext>()
+           .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
+           .Options;
+    }
+   public ProdutosUnitTestController()
+    {
+        var config = new MapperConfiguration(cfg =>
+        {
+            cfg.AddProfile(new DTOMappingProfile());
+        });
+
+        mapper = config.CreateMapper();
+
+        var context = new AppDbContext(DbContextOptions);
+        repository = new UnitOfWork(context);
     }
 }

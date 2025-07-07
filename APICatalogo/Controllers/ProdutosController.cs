@@ -200,8 +200,6 @@ public class ProdutosController(IUnitOfWork uof, IMapper mapper) : ControllerBas
 
         var deletado = _unitOfWork.ProdutoRepository.Delete(produto);
         await _unitOfWork.CommitAsync();
-
-        var deletadoDto = _mapper.Map<ProdutoDTO>(deletado);
-        return Ok(deletadoDto);
+        return NoContent();
     }
 }
