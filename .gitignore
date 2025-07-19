@@ -11,12 +11,14 @@ bld/
 x64/
 x86/
 [Aa][Rr][Mm]*/
+
+# Arquivos de bloqueio antigos (obsoletos, mas seguros de ignorar)
 project.lock.json
 project.fragment.lock.json
 
 # Visual Studio
 .vs/
-.vscode/
+.vscode/         # VS Code settings (remova se quiser versionar)
 *.user
 *.suo
 *.sln.docstates
@@ -52,3 +54,20 @@ packages/
 
 # Scaffolding
 ScaffoldingReadMe.txt
+
+# Perfis de publicação do Visual Studio
+**/Properties/PublishProfiles/
+
+# Configurações locais e segredos (não versionar em produção)
+appsettings.Development.json
+**/appsettings.Development.json
+**/appsettings.Local.json
+**/secrets.json
+.env
+
+# Evitar subir configuração de publicação específica (como IIS)
+web.config
+**/web.config
+
+# Configuração local do VS
+**/.config/

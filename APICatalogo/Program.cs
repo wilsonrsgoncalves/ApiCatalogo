@@ -52,17 +52,17 @@ builder.Services.AddSwaggerGen(c =>
         Version = "v1",
         Title = "APICatalogo",
         Description = "Catálogo de Produtos e Categorias",
-        TermsOfService = new Uri("https://macoratti.net/terms"),
+        TermsOfService = new Uri("https://wrsg.net/terms"),
         Contact = new OpenApiContact
         {
-            Name = "macoratti",
-            Email = "macoratti@yahoo.com",
+            Name = "wilson",
+            Email = "wilssp@gmail.com",
             Url = new Uri("https://www.macoratti.net"),
         },
         License = new OpenApiLicense
         {
             Name = "Usar sobre LICX",
-            Url = new Uri("https://macoratti.net/license"),
+            Url = new Uri("https://wilson.net/license"),
         }
     });
 
@@ -205,20 +205,13 @@ builder.Services.AddAutoMapper(typeof(DTOMappingProfile));
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+app.UseSwagger();
+    
+app.UseSwaggerUI(c =>
 {
-    //Habilita o middleware para servir o Swagger 
-    //gerado como um endpoint  JSON       
-    app.UseSwagger();
-    //habilita o middleware de arquivos estaticos
-    //app.UseSwaggerUI();
-    app.UseSwaggerUI(c =>
-    {
         c.SwaggerEndpoint("/swagger/v1/swagger.json",
             "APICatalogo");
-    });
-}
+});
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

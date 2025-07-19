@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 namespace APICatalogo.Controllers;
 
-[Route("[controller]")]
+[Route("api/[controller]")]
 [ApiController]
 public class CategoriasController(IUnitOfWork uof,
     ILogger<CategoriasController> logger) : ControllerBase

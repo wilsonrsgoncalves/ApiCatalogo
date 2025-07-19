@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace APICatalogo.Controllers;
 
-[Route("[controller]")]
+[Route("api/[controller]")]
 [ApiController]
 [ApiConventionType(typeof(DefaultApiConventions))]
 public class ProdutosController(IUnitOfWork uof, IMapper mapper) : ControllerBase
