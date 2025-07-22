@@ -97,8 +97,13 @@ namespace APICatalogo.Controllers
         [Route("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
-            var user = await _userManager.FindByNameAsync(model.UserName!);
-
+            //var user = await _userManager.FindByNameAsync(model.Email!);
+            var user = await _userManager.FindByEmailAsync(model.Email!);
+            if (user is null)
+            {
+                _logger.LogInformation(1, "User not found: {Email}", model.Email);
+                return Unauthorized(new { error = "Invalid credentials" });
+            }
             if (user is not null && await _userManager.CheckPasswordAsync(user, model.Password!))
             {
                 var userRoles = await _userManager.GetRolesAsync(user);

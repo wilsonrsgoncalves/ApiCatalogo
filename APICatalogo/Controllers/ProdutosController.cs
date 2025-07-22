@@ -19,7 +19,8 @@ public class ProdutosController(IUnitOfWork uof, IMapper mapper) : ControllerBas
     private readonly IMapper _mapper = mapper;
 
     // ========================================
-    [Authorize(Policy = "UserOnly")]
+    //[Authorize(Policy = "UserOnly")]
+    [Authorize(Policy = "AdminOnly")]
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -35,7 +36,8 @@ public class ProdutosController(IUnitOfWork uof, IMapper mapper) : ControllerBas
     }
 
     // ========================================
-    [Authorize(Policy = "UserOnly")]
+    //[Authorize(Policy = "UserOnly")]
+    [Authorize(Policy = "AdminOnly")]
     [HttpGet("{id:int}", Name = "ObterProduto")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
